@@ -21,7 +21,7 @@ local strlower = _G.strlower
 local format = _G.format
 
 -- WOW APIs
-local GetCurrencyInfo = GetCurrencyInfo
+local C_CurrencyInfo = C_CurrencyInfo
 local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
 local UnitGUID = UnitGUID
 local LoadAddOn = LoadAddOn
@@ -176,11 +176,11 @@ function R:OnCurrencyUpdate(event)
 
 	-- Check if any coins were used
 	for k, v in pairs(self.coins) do
-		local name, currencyAmount, texture, earnedThisWeek, weeklyMax, totalMax, isDiscovered = GetCurrencyInfo(k)
-		local diff = currencyAmount - (coinamounts[k] or 0)
-		coinamounts[k] = currencyAmount
+		local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(k)
+		local diff = currencyInfo.quantity - (coinamounts[k] or 0)
+		coinamounts[k] = currencyInfo.quantity
 		if diff < 0 then
-			self:Debug("Used coin: " .. name)
+			self:Debug("Used coin: " .. currencyInfo.name)
 			R:CheckForCoinItem()
 			self:ScheduleTimer(
 				function()
